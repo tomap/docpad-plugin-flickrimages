@@ -20,10 +20,12 @@ module.exports = (BasePlugin) ->
 			config = @config
 			pathUtil = require('path')
 			fsUtil = require('fs')
-
+			flickr = require('flickr-with-uploads')
 			# Fetch our configuration
 			associatedFilesPath = @config.associatedFilesPath
 			createAssociatedFilesPath = @config.createAssociatedFilesPath
+
+
 
 			# Extend our prototype
 			DocumentModel::getAssociatedFilesPath = ->
