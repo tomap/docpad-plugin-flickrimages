@@ -5,5 +5,5 @@ module.exports = (testers) ->
 		# Configuration
 		docpadConfig:
 			enabledPlugins:
-				'associatedfiles': true
+				'flickrimages': true
 				'eco': true

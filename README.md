@@ -1,22 +1,22 @@
-# Associated Files Plugin for DocPad
-This plugin streamlines finding associated files for a particular document in [DocPad](https://docpad.org), which is useful for:
-- getting images for a gallery
-- getting downloads for an article
-- etc. etc.
+# Flickr Images Plugin for DocPad
+This plugin will handle uploading images to flickr and linking them to your site in [DocPad](https://docpad.org)
 
+Work in progress: lots of things are broken or not working yet...
+
+---
 
 
 ## Install
 
 ```
-npm install --save docpad-plugin-associatedfiles
+npm install --save docpad-plugin-flickrimages
 ```
 
 
 
 ## Usage
 
-The way it works is by looking into `src/files/associated-files/#{document.associatedFilesDirectory or document.basename}` for files. Where `associatedFilesDirectory` is set in your document's meta data, and if it doesn't exist it will use the document's basename (e.g. the basename of `my-holiday-2012.html.eco` is `my-holiday-2012`). Any files inside that path will be associated to your document, and retrieveable by `@getDocument().getAssociatedFiles()`
+The way it works is by looking into `src/files/flickr-images/#{document.flickrImagesDirectory or document.basename}` for files. Where `flickrImagesDirectory` is set in your document's meta data, and if it doesn't exist it will use the document's basename (e.g. the basename of `my-holiday-2012.html.eco` is `my-holiday-2012`). Any files inside that path will be associated to your document, and retrieveable by `@getDocument().getAssociatedFiles()`
 
 Lets see how this works, we have the document `src/documents/my-holiday-2012.html.eco`:
 
