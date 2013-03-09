@@ -3,7 +3,7 @@ module.exports = (BasePlugin) ->
 	# Define Associated Files Plugin
 	class FlickrImagePlugin extends BasePlugin
 		# Plugin name
-		name: 'flickrImages'
+		name: 'flickrimages'
 
 		# Plugin config
 		config:
@@ -82,7 +82,7 @@ module.exports = (BasePlugin) ->
 						# if there are multiple pages, multiple requests are required
 						for photo in res.photos.photo
 							do (photo) ->
-								#console.log photo
+								console.log photo.title
 								info = {}
 								info.title = photo.title
 								tasks.push (complete) ->
