@@ -1,7 +1,12 @@
 # Flickr Images Plugin for DocPad
 This plugin will handle uploading images to flickr and linking them to your site in [DocPad](https://docpad.org)
 
-Work in progress: lots of things are broken or not working yet...
+## Work in progress
+
+Lots of thing to do:
+
+Currently the output has been made to work with fancybox, which is fine for me, but not for everyone.
+
 
 ---
 
@@ -16,7 +21,7 @@ npm install --save docpad-plugin-flickrimages
 
 ## Usage
 
-The way it works is by looking into `src/files/flickr-images/#{document.flickrImagesDirectory or document.basename}` for files. Where `flickrImagesDirectory` is set in your document's meta data, and if it doesn't exist it will use the document's basename (e.g. the basename of `my-holiday-2012.html.eco` is `my-holiday-2012`). Any files inside that path will be associated to your document, and retrieveable by `@getDocument().getAssociatedFiles()`
+The way it works is by looking into `src/files/flickr-images/#{document.flickrImagesDirectory or document.basename}` for files. Where `flickrImagesDirectory` is set in your document's meta data, and if it doesn't exist it will use the document's basename (e.g. the basename of `my-holiday-2012.html.eco` is `my-holiday-2012`). Any files inside that path will be associated to your document, and retrievable by `@getDocument().getAssociatedFiles()`
 
 Lets see how this works, we have the document `src/documents/my-holiday-2012.html.eco`:
 
@@ -27,28 +32,16 @@ title: My Holiday in 2012
 
 <h2>Here are some great photos from our trip</h2>
 
-<% for file in @getDocument().getAssociatedFiles(): %>
-<p>
-	<h3><%= file.title or file.name %></h3>
-	<img src="<%= file.url %>" title="<%= file.title or file.name %>" />
-</p>
-<% end %>
+<%- @getDocument().getFlickrImage('The Eiffel Tour.jpg') %>
 ```
 
-Then we will stick a few images inside our path: `src/files/associated-files/my-holiday-2012`. And we'll end up with the rendered result:
+Then we will stick The Eiffel Tour.jpg in this folder: `src/files/flickr-images/my-holiday-2012`. And we'll end up with the rendered result:
 
 ``` html
 <h2>Here are some great photos from our trip</h2>
 
-<p>
-	<h3>sweet-sweet-beach.jpg</h3>
-	<img src="/associated-files/my-holiday-2012/sweet-sweet-beach.jpg" title="sweet-sweet-beach.jpg" />
-</p>
+<a rel="flickr-images/my-holiday-2012/" class="fancybox" data-fancybox-href="http://farm9.staticflickr.com/8528/8521291746_fc4e33b592_b.jpg" href="http://www.flickr.com/photos/92861950@N07/8521291746/"><img src="http://farm9.staticflickr.com/8528/8521291746_fc4e33b592.jpg"></a>
 
-<p>
-	<h3>sweet-sweet-icecream.jpg</h3>
-	<img src="/associated-files/my-holiday-2012/sweet-sweet-icecream.jpg" title="sweet-sweet-icecream.jpg" />
-</p>
 ```
 
 Ins't that cool?
@@ -60,8 +53,5 @@ You can discover the history inside the `History.md` file
 
 ## License
 Licensed under the incredibly [permissive](http://en.wikipedia.org/wiki/Permissive_free_software_licence) [MIT License](http://creativecommons.org/licenses/MIT/)
-<br/>Copyright &copy; 2012+ [Bevry Pty Ltd](http://bevry.me)
+<br/>Copyright &copy; 2013+ [Thomas Piart](http://tpî.eu)
 
-## Contributors
-- [Benjamin Lupton](http://balupton.com)
-- [Morgan Sutherland](http://msutherl.net)

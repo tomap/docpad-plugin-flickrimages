@@ -1,6 +1,6 @@
 # Export Plugin
 module.exports = (BasePlugin) ->
-	# Define Associated Files Plugin
+	# Define Flickr Image Plugin
 	class FlickrImagePlugin extends BasePlugin
 		# Plugin name
 		name: 'flickrimages'
@@ -9,6 +9,7 @@ module.exports = (BasePlugin) ->
 		config:
 			flickrImagesPath: 'flickr-images'
 			flickrTag: 'docpad'
+			defaultSize: 500
 
 		# DocPad is ready now
 		# Lets use this time to extend our file model
@@ -30,45 +31,109 @@ module.exports = (BasePlugin) ->
 			fsImages = new docpad.FilesCollection()
 			
 			# Fetch our configuration
-			associatedFilesPath = config.flickrImagesPath
-			createAssociatedFilesPath = config.createAssociatedFilesPath
+			flickrImagesPath = config.flickrImagesPath
+
+			uniqueFlickrTitle = {}
+			
+			handleOnePhoto = (photo, tasks) ->
+
+				console.log photo.title
+				# check that the photo online is not duplicate
+				if uniqueFlickrTitle[photo.title]
+					docpad.log 'warn', 'This image is available more than once on flickr with the same title:' + photo.title
+					return
+				uniqueFlickrTitle[photo.title] = true
+
+				# check that the photo is part of the file we found
+				localFile = fsImages.findOne({flickrTitle:photo.title})
+				if !localFile
+					docpad.log 'warn', 'This image is online but does not match one of your image:' + photo.title + '. You should remove the tag or delete it.'
+					return
+	
+				info = {}
+				info.title = photo.title
+				tasks.push (complete) ->
+					#console.log photo
+					FlickPhotoCbk = (err, res) ->
+						if(err)
+							console.log err
+							info.err = true
+						else
+							#console.log 'last update: ' + res.photo.dates.lastupdate
+							#console.log res.photo.urls.url[0]._content
+							info.url = res.photo.urls.url[0]._content
+							
+							info.mtime = res.photo.dates.lastupdate
+						complete()
+
+
+					client.createRequest('flickr.photos.getInfo',{photo_id:photo.id},true, FlickPhotoCbk).send()
+
+				tasks.push (complete) ->
+					#console.log photo
+					FlickPhotoCbk = (err, res) ->
+						if(err)
+							console.log err
+							info.err = true
+						else
+							for size in res.sizes.size
+								# find smarter way...
+								if(!info.small)
+									info.small = size.source
+								info.big = size.source
+								if(!info.sDefault && parseInt(size.width) >= config.defaultSize)
+									#console.log size
+									info.sDefault = size.source
+
+						complete()
+
+
+					client.createRequest('flickr.photos.getSizes',{photo_id:photo.id},true, FlickPhotoCbk).send()
+				flickrImages.push info
+			
+
+			uploadTasks = new balUtil.Group(next)
 
 			updateImages = () ->
 				
 				# verify that each image is on flickr
 				# if not: upload it
 				# if older: update it
-				FlickrUploadCbk = (err,res) ->
-					console.log err
-					console.log res
-
-
 				fsImages.forEach (document)->
 					mImage
-					p = document.get('id').indexOf(associatedFilesPath)>=0
-					epath = document.get('relativeBase').substr(p+associatedFilesPath.length).replace '/',' '
-					#console.log epath
+					flickrTitle = document.get('flickrTitle')
+
 					for image in flickrImages
-						if image.title == epath
+						if image.title == flickrTitle
 							mImage = image
 							break
 					if mImage
 						if mImage.mtime > document.stat.mtime/1000
 							#console.log 'image is already up to date on flickr'
 							document.set 'flickrURL' , mImage.url
-							if(mImage.s500)
-								document.set 'flickrImage',mImage.s500
+							if(mImage.sDefault)
+								document.set 'flickrImage',mImage.sDefault
 								document.set 'flickrImageBig',mImage.big
 							else
 								document.set 'flickrImage',mImage.big
+							fsImage.remove document
 						else
 							console.log 'image on flickr is out of date'
 							# TODO
 					else
 						# image needs to be uploaded to flickr and after that, we'll need to get it's characteristics
-						client.createRequest('upload',{title:epath, tags:config.flickrTag, photo:fsUtil.createReadStream(document.get('fullPath'), {flags: 'r'})},true, FlickrUploadCbk).send()
+						uploadTasks.push (complete) ->
+							FlickrUploadCbk = (err,res) ->
+								if err
+									console.log err
+								else									
+									handleOnePhoto {title:flickrTitle,id:res.photoid}, uploadTasks
 
-				return next()
+								complete()
+
+							client.createRequest('upload',{title:flickrTitle, tags:config.flickrTag, photo:fsUtil.createReadStream(document.get('fullPath'), {flags: 'r'})},true, FlickrUploadCbk).send()
+
+				uploadTasks.async()
 
 			tasks = new balUtil.Group(updateImages)
 
@@ -82,47 +147,8 @@ module.exports = (BasePlugin) ->
 						# if there are multiple pages, multiple requests are required
 						for photo in res.photos.photo
 							do (photo) ->
-								console.log photo.title
-								info = {}
-								info.title = photo.title
-								tasks.push (complete) ->
-									#console.log photo
-									FlickPhotoCbk = (err, res) ->
-										if(err)
-											console.log err
-											info.err = true
-										else
-											#console.log 'last update: ' + res.photo.dates.lastupdate
-											#console.log res.photo.urls.url[0]._content
-											info.url = res.photo.urls.url[0]._content
-											
-											info.mtime = res.photo.dates.lastupdate
-										complete()
-
-
-									client.createRequest('flickr.photos.getInfo',{photo_id:photo.id},true, FlickPhotoCbk).send()
-
-								tasks.push (complete) ->
-									#console.log photo
-									FlickPhotoCbk = (err, res) ->
-										if(err)
-											console.log err
-											info.err = true
-										else
-											for size in res.sizes.size
-												# find smarter way...
-												if(!info.small)
-													info.small = size.source
-												info.big = size.source
-												if(!info.s500 && parseInt(size.width) >= 500)
-													#console.log size
-													info.s500 = size.source
-
-										complete()
-
-
-									client.createRequest('flickr.photos.getSizes',{photo_id:photo.id},true, FlickPhotoCbk).send()
-								flickrImages.push info
+								handleOnePhoto photo, task
+								
 					complete()
 
 				client.createRequest('flickr.photos.search',{tags:config.flickrTag},true, FlickrCbk).send()
@@ -130,9 +156,18 @@ module.exports = (BasePlugin) ->
 		
 			collection.forEach (document) ->
 				
-				if(document.get('id').indexOf(associatedFilesPath)>=0)
-					fsImages.add document
-					#do not write this image as it's on flickr :)
+				if(document.get('id').indexOf(flickrImagesPath + '/')>=0)
+					# warn about possible duplicates (x.png and x.jpg)
+					dup = fsImages.findOne({relativeBase:document.get('relativeBase')})
+					if(dup)
+						docpad.log('warn', 'Duplicate image was found:' + document.get('id') + ' and ' + dup.get('id') + '. You should clean it or rename it.')
+					else
+						p = document.get('id').indexOf(flickrImagesPath)>=0
+						flickrTitle = document.get('relativeBase').substr(p+flickrImagesPath.length).replace '/',' '
+						# set the title as it will be in flickr: docname + file name without extension
+						document.set 'flickrTitle', flickrTitle
+						fsImages.add document
+					#do not write this image to the output folder as it's on flickr :)
 					document.set 'write' , false
 				
 			tasks.async()
@@ -143,17 +178,17 @@ module.exports = (BasePlugin) ->
 			{docpad} = opts
 			{DocumentModel} = docpad
 			
-			associatedFilesPath = @config.flickrImagesPath
-			DocumentModel::getAssociatedFilesPath = ->
-				documentAssociatedFilesPath = @get('flickrImagesDirectory') or @get('basename')
-				documentAssociatedFilesPathNormalized = @getPath(documentAssociatedFilesPath, associatedFilesPath)
-				unless documentAssociatedFilesPathNormalized.slice(-1) in ['\\','/']
-					documentAssociatedFilesPathNormalized += pathUtil.sep
-				return documentAssociatedFilesPathNormalized
+			FlickrImagesPath = @config.flickrImagesPath
+			DocumentModel::getFlickrImagesPath = ->
+				documentFlickrImagesPath = @get('flickrImagesDirectory') or @get('basename')
+				documentFlickrImagesPathNormalized = @getPath(documentFlickrImagesPath, FlickrImagesPath)
+				unless documentFlickrImagesPathNormalized.slice(-1) in ['\\','/']
+					documentFlickrImagesPathNormalized += pathUtil.sep
+				return documentFlickrImagesPathNormalized
 			DocumentModel::getFlickrImage = (path) ->
 				# Prepare
 				document = @
-				docpath = document.getAssociatedFilesPath()
+				docpath = document.getFlickrImagesPath()
 				#console.log docpath + path
 				file = docpad.getFile({relativePath:{$endsWith:docpath + path}})
 				if(file)
