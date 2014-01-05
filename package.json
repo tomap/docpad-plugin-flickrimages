@@ -9,10 +9,16 @@
 		"flickr",
 		"upload"
 	],
-	"author": "Thomas Piart <me@tpî.me> (http://tpî.eu)",
-	"maintainers": [
-		"Thomas Piart <me@tpî.me> (http://tpî.eu)"
-	],
+	"author": {
+		"name": "Thomas Piart",
+		"email": "me@tpî.me",
+		"url": "http://tpî.eu"
+	},
+	"maintainers": {
+		"name": "Thomas Piart",
+		"email": "me@tpî.me",
+		"url": "http://tpî.eu"
+	},
 	"contributors": [
 		"Morgan Sutherland <morgan@msutherl.net> http://msutherl.net",
 		"Benjamin Lupton <b@lupton.cc> (http://balupton.com)",
@@ -26,20 +32,24 @@
 		"type": "git",
 		"url": "https://github.com/tomap/docpad-plugin-flickrimages.git"
 	},
+
 	"engines" : {
 		"node": ">=0.8",
-		"docpad": ">=6.1 <7"
+		"docpad": ">=6"
 	},
 	"dependencies": {
-    	"flickr-with-uploads": ">= 0.2",
-    	"bal-util": "1.16.x"
+		"flickr-with-uploads": ">= 0.2",
+		"bal-util": ">= 1.16"
 	},
 	"devDependencies": {
-		"coffee-script": "1.5.x",
+		"coffee-script": "~1.6.2",
 		"oauth": ">= 0.8"
 	},
 	"main": "./out/flickrimages.plugin.js",
 	"scripts": {
-		"test": "node ./test/flickrimages.test.js"
-	}
+		"test": "node ./out/flickrimages.test.js"
+	},
+	
+	"readmeFilename": "README.md"
+	
 }

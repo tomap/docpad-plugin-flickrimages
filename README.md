@@ -6,7 +6,7 @@ This plugin will handle uploading images to flickr and linking them to your site
 Lots of thing to do:
 
 Currently the output has been made to work with fancybox, which is fine for me, but not for everyone.
-
+unit tests are broken and I don't know how to fix them...
 
 ---
 
@@ -54,4 +54,3 @@ You can discover the history inside the `History.md` file
 ## License
 Licensed under the incredibly [permissive](http://en.wikipedia.org/wiki/Permissive_free_software_licence) [MIT License](http://creativecommons.org/licenses/MIT/)
 <br/>Copyright &copy; 2013+ [Thomas Piart](http://tpî.eu)
-
