@@ -268,7 +268,7 @@ module.exports = (BasePlugin) ->
 				# Prepare
 				document = @
 				docpath = getFlickrImagesPath(document)
-				console.log docpath + path
+				docpad.log 'debug', 'Image used', docpath + path
 				file = docpad.getFile({relativePath:{$endsWith:docpath + path}})
 				if file
 					big = file.get('flickrImageBig')
