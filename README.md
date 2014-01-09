@@ -6,7 +6,6 @@ This plugin will handle uploading images to flickr and linking them to your site
 Lots of thing to do:
 
 Currently the output has been made to work with fancybox, which is fine for me, but not for everyone.
-unit tests are broken and I don't know how to fix them...
 
 ---
 

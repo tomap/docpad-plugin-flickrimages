@@ -1,5 +1,8 @@
 ## History
 
+v2.0.3
+	- fix unit tests
+
 v2.0.1 January, 2014
 	- completly recreate this plugin
 
