@@ -6,7 +6,7 @@ This plugin will handle uploading images to flickr and linking them to your site
 Lots of thing to do:
 
 Currently the output has been made to work with fancybox, which is fine for me, but not for everyone.
-
+Explain step by step how to obtain flick OAuth keys (not so straight forward)
 ---
 
 
@@ -43,7 +43,15 @@ Then we will stick The Eiffel Tour.jpg in this folder: `src/files/flickr-images/
 
 ```
 
-Ins't that cool?
+You need to create a .env file in your docpad repository containing the following line:
+
+flickrKey=1xxxxxxxxxxxxxxxxxxxxxxxx
+flickrSecret=0xxxxxxxxxxxxx
+flickrOAToken=7xxxxxxxxxxx-3xxxxxxxxxxxxx
+flickrOASecret=5xxxxxxxxxxxxx
+
+
+Isn't that cool?
 
 
 ## History
