@@ -1,6 +1,8 @@
 # Flickr Images Plugin for DocPad
 This plugin will handle uploading images to flickr and linking them to your site in [DocPad](https://docpad.org)
 
+[![Build Status](https://travis-ci.org/tomap/docpad-plugin-flickrimages.png?branch=master)](https://travis-ci.org/tomap/docpad-plugin-flickrimages)
+
 ## Work in progress
 
 Lots of thing to do:
