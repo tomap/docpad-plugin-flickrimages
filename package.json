@@ -40,8 +40,8 @@
 	    "docpad": "6"
 	},
 	"dependencies": {
-		"flickr-with-uploads": ">= 0.2",
-		"taskgroup": "~3.3.6"
+		"flickr-with-uploads": ">=2",
+		"taskgroup": "~3.3.8"
 	},
 	"devDependencies": {
 		"coffee-script": "~1.7.1",
