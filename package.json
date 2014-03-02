@@ -1,6 +1,6 @@
 {
 	"name": "docpad-plugin-flickrimages",
-	"version": "2.0.5",
+	"version": "2.0.6",
 	"description": "DocPad plugin that uploads images to flickr",
 	"homepage": "https://github.com/tomap/docpad-plugin-flickrimages",
 	"keywords": [
@@ -46,9 +46,9 @@
 	"devDependencies": {
 		"coffee-script": "~1.7.1",
 		"docpad": "6",
-		"joe": "*",
-		"joe-reporter-console":"*",
-		"chai":"*",
+		"joe": "~1.3.2",
+		"joe-reporter-console":"~1.2.1",
+		"chai":"~1.9.0",
 		"oauth":">= 0.9"
 	},
 	"main": "./out/flickrimages.plugin.js",
