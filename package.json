@@ -41,7 +41,7 @@
 	},
 	"dependencies": {
 		"flickr-with-uploads": ">=2",
-		"taskgroup": "~3.3.8"
+		"taskgroup": "~3.4.0"
 	},
 	"devDependencies": {
 		"coffee-script": "~1.7.1",
